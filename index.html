@@ -1,0 +1,1888 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OX CiteMetrics — Demo</title>
+<style>
+  :root {
+    --bg: #f7f8fa;
+    --card: #ffffff;
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --success: #16a34a;
+    --error: #dc2626;
+    --warning: #f59e0b;
+    --radius: 10px;
+    --input-bg: #ffffff;
+    --upload-hover-bg: #eff6ff;
+    --upload-success-bg: #f0fdf4;
+    --table-header-bg: #f8fafc;
+    --table-hover-bg: #f8fafc;
+    --log-bg: #1e293b;
+    --log-text: #94a3b8;
+    --stat-total-bg: #eff6ff;
+    --stat-total-border: #bfdbfe;
+    --stat-found-bg: #f0fdf4;
+    --stat-found-border: #bbf7d0;
+    --stat-notfound-bg: #fef2f2;
+    --stat-notfound-border: #fecaca;
+    --citation-high-bg: #dbeafe;
+    --citation-high-text: #1e40af;
+    --citation-med-bg: #fef3c7;
+    --citation-med-text: #92400e;
+    --citation-low-bg: #f1f5f9;
+    --citation-low-text: #475569;
+    --progress-track: #e2e8f0;
+  }
+
+  html.dark {
+    --bg: #131314;
+    --card: #1c1c1e;
+    --primary: #4a90e2;
+    --primary-hover: #6aa8f0;
+    --text: #e4e4e7;
+    --text-muted: #8e8e93;
+    --border: #2c2c2e;
+    --success: #30d158;
+    --error: #ff453a;
+    --input-bg: #131314;
+    --upload-hover-bg: #1e2d42;
+    --upload-success-bg: #14332030;
+    --table-header-bg: #1a1a1b;
+    --table-hover-bg: #232325;
+    --log-bg: #0e0e0f;
+    --log-text: #8e8e93;
+    --stat-total-bg: #1a2744;
+    --stat-total-border: #3a6bd550;
+    --stat-found-bg: #14332040;
+    --stat-found-border: #30d15840;
+    --stat-notfound-bg: #3a1a1a30;
+    --stat-notfound-border: #ff453a40;
+    --citation-high-bg: #1a2744;
+    --citation-high-text: #7abaff;
+    --citation-med-bg: #3d280f40;
+    --citation-med-text: #ffd060;
+    --citation-low-bg: #2c2c2e;
+    --citation-low-text: #c7c7cc;
+    --progress-track: #2c2c2e;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .header-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    flex: 1;
+  }
+
+  .header-brand a {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .header-brand a:hover {
+    color: var(--primary);
+  }
+
+  h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Dark mode toggle */
+  .theme-toggle {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    width: 44px;
+    height: 24px;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    transition: background 0.3s, border-color 0.3s;
+  }
+
+  .theme-toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--primary);
+    transition: transform 0.3s;
+  }
+
+  html.dark .theme-toggle::after {
+    transform: translateX(20px);
+  }
+
+  .theme-toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .toggle-icons {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 5px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.7rem;
+    pointer-events: none;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+    transition: background 0.3s, border-color 0.3s;
+  }
+
+  .card h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  /* Upload area */
+  .upload-area {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 2.5rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+  }
+
+  .upload-area:hover, .upload-area.dragover {
+    border-color: var(--primary);
+    background: var(--upload-hover-bg);
+  }
+
+  .upload-area.has-file {
+    border-color: var(--success);
+    background: var(--upload-success-bg);
+  }
+
+  .upload-area input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .upload-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .upload-text {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  .upload-text strong {
+    color: var(--primary);
+  }
+
+  .file-name {
+    color: var(--success);
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-top: 0.5rem;
+  }
+
+  /* Input tabs */
+  .input-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .input-tab {
+    padding: 0.5rem 1.25rem;
+    border: none;
+    background: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .input-tab:hover {
+    color: var(--text);
+  }
+
+  .input-tab.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+  }
+
+  .paste-area {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.82rem;
+    background: var(--input-bg);
+    color: var(--text);
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s, background 0.3s, color 0.3s;
+    line-height: 1.5;
+  }
+
+  .paste-area:focus {
+    border-color: var(--primary);
+  }
+
+  .paste-area::placeholder {
+    color: var(--text-muted);
+    opacity: 0.6;
+  }
+
+  /* Form row */
+  .form-row {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .form-group {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 0.35rem;
+    color: var(--text-muted);
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s, background 0.3s, color 0.3s;
+    background: var(--input-bg);
+    color: var(--text);
+  }
+
+  .form-group input:focus {
+    border-color: var(--primary);
+  }
+
+  .hint {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+  }
+
+  /* Button */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.5rem;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+
+  .btn:hover:not(:disabled) { background: var(--primary-hover); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .btn-secondary {
+    background: var(--card);
+    color: var(--primary);
+    border: 1px solid var(--primary);
+  }
+
+  .btn-secondary:hover:not(:disabled) {
+    background: var(--upload-hover-bg);
+  }
+
+  .btn-success {
+    background: var(--success);
+  }
+
+  .btn-success:hover:not(:disabled) {
+    background: #15803d;
+  }
+
+  /* Progress */
+  .progress-section { display: none; }
+  .progress-section.visible { display: block; }
+
+  .progress-bar-container {
+    width: 100%;
+    height: 8px;
+    background: var(--progress-track);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: var(--primary);
+    border-radius: 4px;
+    transition: width 0.3s;
+    width: 0%;
+  }
+
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .current-paper {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Results */
+  .results-section { display: none; }
+  .results-section.visible { display: block; }
+
+  .stats {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+  }
+
+  .stat-found {
+    background: var(--stat-found-bg);
+    color: var(--success);
+    border: 1px solid var(--stat-found-border);
+  }
+
+  .stat-notfound {
+    background: var(--stat-notfound-bg);
+    color: var(--error);
+    border: 1px solid var(--stat-notfound-border);
+  }
+
+  .stat-total {
+    background: var(--stat-total-bg);
+    color: var(--primary);
+    border: 1px solid var(--stat-total-border);
+  }
+
+  .stat {
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.15s;
+    user-select: none;
+  }
+
+  .stat:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .stat.active {
+    outline: 2px solid currentColor;
+    outline-offset: -2px;
+  }
+
+  .stat strong {
+    font-size: 1.25rem;
+    display: block;
+  }
+
+  .actions-bar {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  /* Table */
+  .table-wrapper {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+
+  th {
+    background: var(--table-header-bg);
+    padding: 0.65rem 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+
+  th:hover {
+    background: var(--border);
+  }
+
+  .info-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 1.5px solid var(--text-muted);
+    color: var(--text-muted);
+    font-size: 0.6rem;
+    font-weight: 700;
+    font-style: normal;
+    font-family: serif;
+    margin-left: 0.3rem;
+    cursor: help;
+    flex-shrink: 0;
+    vertical-align: middle;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .info-icon:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+
+  .col-tooltip {
+    position: fixed;
+    padding: 0.45rem 0.7rem;
+    background: var(--log-bg);
+    color: var(--log-text);
+    font-size: 0.75rem;
+    font-weight: 400;
+    border-radius: 6px;
+    white-space: normal;
+    max-width: 260px;
+    line-height: 1.4;
+    pointer-events: none;
+    z-index: 9999;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.2);
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  .col-tooltip.visible {
+    opacity: 1;
+  }
+
+  .col-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--log-bg);
+  }
+
+  th .sort-arrow {
+    display: inline-block;
+    margin-left: 0.35rem;
+    font-size: 0.7rem;
+    opacity: 0.3;
+    transition: opacity 0.15s;
+  }
+
+  th.sort-asc .sort-arrow,
+  th.sort-desc .sort-arrow {
+    opacity: 1;
+  }
+
+  td {
+    padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  tr:hover td { background: var(--table-hover-bg); }
+
+  /* Sticky Title Column (nur aktiv wenn .sticky-enabled auf .table-wrapper) */
+  .sticky-enabled .sticky-col {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: var(--card);
+    border-right: 2px solid var(--border);
+    min-width: 200px;
+    max-width: 350px;
+  }
+
+  .sticky-enabled .sticky-col-header {
+    z-index: 4;
+    background: var(--table-header-bg);
+  }
+
+  .sticky-enabled tr:hover .sticky-col { background: var(--table-hover-bg); }
+
+  .toggle-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .toggle-label input { cursor: pointer; }
+
+  .citation-badge {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+
+  .citation-high { background: var(--citation-high-bg); color: var(--citation-high-text); }
+  .citation-med  { background: var(--citation-med-bg); color: var(--citation-med-text); }
+  .citation-low  { background: var(--citation-low-bg); color: var(--citation-low-text); }
+
+  .status-found     { color: var(--success); font-weight: 600; }
+  .status-not-found { color: var(--error); font-weight: 600; }
+
+  .type-badge {
+    display: inline-block;
+    padding: 0.1rem 0.5rem;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    background: var(--citation-low-bg);
+    color: var(--citation-low-text);
+  }
+
+  .mesh-tag {
+    display: inline-block;
+    padding: 0.1rem 0.45rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin: 0.05rem 0.1rem;
+    white-space: nowrap;
+  }
+
+  .mesh-tag-type {
+    background: var(--stat-total-bg);
+    color: var(--primary);
+    border: 1px solid var(--stat-total-border);
+  }
+
+  .mesh-tag-human {
+    background: var(--stat-found-bg);
+    color: var(--success);
+    border: 1px solid var(--stat-found-border);
+  }
+
+  .mesh-tag-animal {
+    background: var(--citation-med-bg);
+    color: var(--citation-med-text);
+    border: 1px solid var(--citation-med-bg);
+  }
+
+  .mesh-tag-invitro {
+    background: var(--stat-notfound-bg);
+    color: var(--error);
+    border: 1px solid var(--stat-notfound-border);
+  }
+
+  /* Log */
+  .log {
+    max-height: 150px;
+    overflow-y: auto;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.78rem;
+    background: var(--log-bg);
+    color: var(--log-text);
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin-top: 0.75rem;
+    display: none;
+  }
+
+  .log.visible { display: block; }
+  .log-entry { padding: 0.1rem 0; }
+  .log-success { color: #4ade80; }
+  .log-error { color: #f87171; }
+  .log-info { color: #60a5fa; }
+
+  /* Footer */
+  .footer {
+    margin-top: 2.5rem;
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .footer a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer a:hover {
+    color: var(--primary);
+  }
+
+  .footer-version {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.72rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 1rem 0.5rem; }
+    .form-row { flex-direction: column; }
+    .stats { flex-direction: column; }
+    .header { flex-wrap: wrap; }
+    .footer { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-brand">
+      <h1><span style="opacity:0.5;font-weight:400;">OX</span> CiteMetrics</h1>
+      <a href="https://www.outoftheb-ox.de" target="_blank">www.outoftheb-ox.de</a>
+    </div>
+    <label class="theme-toggle-label">
+      <span class="theme-label-text">Dark</span>
+      <div class="theme-toggle" id="themeToggle" role="switch" aria-checked="false" tabindex="0">
+        <div class="toggle-icons">
+          <span>&#9788;</span><span>&#9790;</span>
+        </div>
+      </div>
+    </label>
+  </div>
+  <p class="subtitle">Zitationsmetriken f&uuml;r wissenschaftliche Paper &mdash; lokal, schnell, &uuml;bersichtlich.</p>
+  <div id="demoBanner" style="background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;padding:12px 20px;border-radius:var(--radius);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+    <span style="font-size:0.95rem;"><strong>Demo-Version</strong> &mdash; max. 3 Paper pro Lookup. Unbegrenzt mit der Vollversion.</span>
+    <a href="https://www.outoftheb-ox.de" target="_blank" style="background:#fff;color:#1e40af;padding:6px 16px;border-radius:6px;font-weight:600;text-decoration:none;font-size:0.85rem;white-space:nowrap;">Vollversion holen &rarr;</a>
+  </div>
+
+  <!-- Upload Card -->
+  <div class="card">
+    <h2>1. Daten eingeben</h2>
+    <div class="input-tabs">
+      <button class="input-tab active" id="tabFile" onclick="switchTab('file')">Datei hochladen</button>
+      <button class="input-tab" id="tabPaste" onclick="switchTab('paste')">Text einf&#252;gen</button>
+    </div>
+    <div class="tab-content" id="tabContentFile">
+      <div class="upload-area" id="uploadArea">
+        <input type="file" id="fileInput" accept=".csv,.tsv,.txt">
+        <div class="upload-icon">&#128196;</div>
+        <div class="upload-text"><strong>Klicken</strong> oder Datei hierher ziehen</div>
+        <div class="hint">CSV mit Spalten wie DOI, Title, Author</div>
+        <div class="file-name" id="fileName"></div>
+      </div>
+    </div>
+    <div class="tab-content" id="tabContentPaste" style="display:none;">
+      <textarea id="pasteInput" class="paste-area" rows="8" placeholder="Daten hier einf&#252;gen &#8211; z.B. aus Excel, Google Sheets oder als CSV-Text.&#10;&#10;Beispiel (tabellarisch):&#10;Title&#9;DOI&#10;Attention Is All You Need&#9;10.48550/arXiv.1706.03762&#10;Deep Residual Learning&#9;10.1109/CVPR.2016.90&#10;&#10;Oder einfach Titel (Checkbox aktivieren):&#10;Attention Is All You Need&#10;Deep Residual Learning for Image Recognition"></textarea>
+      <div style="margin-top:0.5rem; display:flex; align-items:center; gap:0.5rem;">
+        <label style="display:flex; align-items:center; gap:0.4rem; cursor:pointer; font-size:0.85rem; color:var(--text);">
+          <input type="checkbox" id="titleOnlyMode" onchange="toggleTitleOnlyHint()" style="width:16px; height:16px; accent-color:var(--primary); cursor:pointer;">
+          Jede Zeile = ein Titel <span style="color:var(--text-muted); font-size:0.78rem;">(z.B. Literaturliste aus Blog/Artikel)</span>
+        </label>
+      </div>
+      <div class="hint" style="margin-top:0.35rem" id="pasteHint">Tabellarische Daten (Tab- oder Komma-getrennt) mit Kopfzeile. Kopieren aus Excel/Sheets funktioniert direkt.</div>
+      <button class="btn btn-secondary" style="margin-top:0.5rem" onclick="handlePaste()">&#10003; Text &#252;bernehmen</button>
+      <div class="file-name" id="pasteStatus"></div>
+    </div>
+  </div>
+
+  <!-- Settings Card -->
+  <div class="card">
+    <h2>2. Einstellungen</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="emailInput">E-Mail (optional, wird gespeichert)</label>
+        <input type="email" id="emailInput" placeholder="deine@email.de">
+        <div class="hint" id="emailHint">F&uuml;r schnellere API-Antworten (Crossref Polite Pool)</div>
+      </div>
+      <div class="form-group" style="flex: 0 0 auto;">
+        <button class="btn" id="startBtn" disabled onclick="startLookup()">
+          &#9654; Abfrage starten
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="card progress-section" id="progressSection">
+    <h2>Fortschritt</h2>
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="progress-info">
+      <span id="progressText">0 / 0</span>
+      <span id="progressPercent">0%</span>
+    </div>
+    <div class="current-paper" id="currentPaper"></div>
+    <div class="log" id="logPanel"></div>
+    <button class="btn-secondary btn" style="margin-top:0.75rem; font-size:0.8rem; padding:0.4rem 0.75rem;" onclick="toggleLog()">
+      Log anzeigen/verbergen
+    </button>
+  </div>
+
+  <!-- Results -->
+  <div class="results-section" id="resultsSection">
+    <div class="card">
+      <h2>Ergebnis</h2>
+      <div class="stats">
+        <div class="stat stat-total" id="filterTotal" onclick="filterByStatus('all')" title="Alle anzeigen"><strong id="statTotal">0</strong> Gesamt</div>
+        <div class="stat stat-found" id="filterFound" onclick="filterByStatus('found')" title="Nur gefundene anzeigen"><strong id="statFound">0</strong> Gefunden</div>
+        <div class="stat stat-notfound" id="filterNotFound" onclick="filterByStatus('notfound')" title="Nur nicht gefundene anzeigen"><strong id="statNotFound">0</strong> Nicht gefunden</div>
+      </div>
+      <div class="actions-bar" style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+        <button class="btn btn-success" onclick="downloadCSV()">&#11015; CSV herunterladen</button>
+        <button class="btn btn-secondary" onclick="copyTable()">&#128203; Tabelle kopieren</button>
+        <label class="toggle-label"><input type="checkbox" id="stickyToggle" checked onchange="toggleStickyCol()"> Titel fixieren</label>
+      </div>
+      <div class="table-wrapper sticky-enabled" id="tableWrapper">
+        <table id="resultsTable">
+          <thead id="tableHead"></thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <span>&copy; 2026 <a href="https://www.outoftheb-ox.de" target="_blank">outoftheb-ox.de</a></span>
+    <span class="footer-version">v1.16 Demo</span>
+  </footer>
+</div>
+
+<script>
+// --- Dark Mode ---
+const themeToggle = document.getElementById('themeToggle');
+const labelText = document.querySelector('.theme-label-text');
+
+function setDarkMode(isDark) {
+  document.documentElement.classList.toggle('dark', isDark);
+  themeToggle.setAttribute('aria-checked', isDark);
+  labelText.textContent = isDark ? 'Light' : 'Dark';
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+}
+
+// Init from preference
+const savedTheme = localStorage.getItem('theme');
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+setDarkMode(savedTheme ? savedTheme === 'dark' : prefersDark);
+
+themeToggle.addEventListener('click', () => {
+  setDarkMode(!document.documentElement.classList.contains('dark'));
+});
+themeToggle.addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); themeToggle.click(); }
+});
+
+// --- E-Mail-Persistenz ---
+const emailInput = document.getElementById('emailInput');
+const emailHint = document.getElementById('emailHint');
+
+// Gespeicherte E-Mail laden
+const savedEmail = localStorage.getItem('ox_citemetrics_email');
+if (savedEmail) {
+  emailInput.value = savedEmail;
+} else {
+  // Erstmaliger Hinweis
+  emailHint.innerHTML = '\u2139\uFE0F Tipp: E-Mail einmal eingeben \u2014 wird gespeichert und k\u00fcnftig automatisch verwendet.';
+  emailHint.style.color = 'var(--primary)';
+}
+
+// Bei \u00c4nderung speichern
+emailInput.addEventListener('input', () => {
+  const val = emailInput.value.trim();
+  localStorage.setItem('ox_citemetrics_email', val);
+  if (val) {
+    emailHint.textContent = '\u2713 E-Mail gespeichert';
+    emailHint.style.color = 'var(--success)';
+    setTimeout(() => {
+      emailHint.textContent = 'F\u00fcr schnellere API-Antworten (Crossref Polite Pool)';
+      emailHint.style.color = '';
+    }, 2000);
+  }
+});
+
+// State
+let parsedRows = [];
+let headers = [];
+let results = [];
+let isRunning = false;
+
+// --- CSV Parser ---
+function parseCSV(text) {
+  const firstLine = text.split('\n')[0];
+  let delimiter = ',';
+  if (firstLine.split('\t').length > firstLine.split(',').length) delimiter = '\t';
+  else if (firstLine.split(';').length > firstLine.split(',').length) delimiter = ';';
+
+  let current = '';
+  let inQuotes = false;
+  const lines = [];
+
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '"') {
+      inQuotes = !inQuotes;
+      current += ch;
+    } else if ((ch === '\n' || ch === '\r') && !inQuotes) {
+      if (current.trim()) lines.push(current);
+      current = '';
+      if (ch === '\r' && text[i + 1] === '\n') i++;
+    } else {
+      current += ch;
+    }
+  }
+  if (current.trim()) lines.push(current);
+
+  const rows = [];
+  for (const line of lines) {
+    const fields = [];
+    let field = '';
+    let inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') {
+        if (inQ && line[i + 1] === '"') { field += '"'; i++; }
+        else inQ = !inQ;
+      } else if (ch === delimiter && !inQ) {
+        fields.push(field.trim());
+        field = '';
+      } else {
+        field += ch;
+      }
+    }
+    fields.push(field.trim());
+    rows.push(fields);
+  }
+  return rows;
+}
+
+function detectColumns(hdrs) {
+  const map = { doi: -1, title: -1, author: -1 };
+  hdrs.forEach((h, i) => {
+    const l = h.toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (['doi', 'digitalobjectidentifier'].includes(l)) map.doi = i;
+    else if (['title', 'titel', 'articletitle', 'papertitle', 'documenttitle'].includes(l)) map.title = i;
+    else if (['author', 'authors', 'autor', 'autoren', 'firstauthor', 'erstautor'].includes(l)) map.author = i;
+  });
+  return map;
+}
+
+// --- DOI / Identifier Validation ---
+function validateDOI(value) {
+  if (!value) return { valid: false, type: 'empty', cleaned: '' };
+  let v = value.trim().replace(/^["']+|["']+$/g, '');
+
+  // URL-Form bereinigen
+  v = v.replace(/^https?:\/\/(dx\.)?doi\.org\//, '');
+
+  // ISBN-13: beginnt mit 978 oder 979, 13 Ziffern (mit/ohne Bindestriche)
+  const isbnClean = v.replace(/[-\s]/g, '');
+  if (/^(978|979)\d{10}$/.test(isbnClean)) {
+    return { valid: false, type: 'ISBN-13', cleaned: v, hint: `"${v}" ist eine ISBN-13, keine DOI` };
+  }
+
+  // ISBN-10: 10 Zeichen (9 Ziffern + Prüfziffer 0-9 oder X)
+  if (/^\d{9}[\dXx]$/.test(isbnClean)) {
+    return { valid: false, type: 'ISBN-10', cleaned: v, hint: `"${v}" ist eine ISBN-10, keine DOI` };
+  }
+
+  // ISSN: XXXX-XXXX
+  if (/^\d{4}-?\d{3}[\dXx]$/.test(isbnClean)) {
+    return { valid: false, type: 'ISSN', cleaned: v, hint: `"${v}" ist eine ISSN, keine DOI` };
+  }
+
+  // PMID: reine Zahl
+  if (/^\d{1,10}$/.test(v)) {
+    return { valid: false, type: 'PMID', cleaned: v, hint: `"${v}" sieht nach einer PMID aus, keine DOI` };
+  }
+
+  // Gültiges DOI-Format: muss mit 10. beginnen und einen / enthalten
+  if (/^10\.\d{4,9}\/\S+$/.test(v)) {
+    return { valid: true, type: 'DOI', cleaned: v };
+  }
+
+  // Ungültige Struktur
+  return { valid: false, type: 'unbekannt', cleaned: v, hint: `"${v}" hat kein gültiges DOI-Format (erwartet: 10.XXXX/...)` };
+}
+
+// --- Tab Switching ---
+let inputMode = 'file'; // 'file' | 'paste'
+
+function switchTab(mode) {
+  inputMode = mode;
+  document.getElementById('tabFile').classList.toggle('active', mode === 'file');
+  document.getElementById('tabPaste').classList.toggle('active', mode === 'paste');
+  document.getElementById('tabContentFile').style.display = mode === 'file' ? 'block' : 'none';
+  document.getElementById('tabContentPaste').style.display = mode === 'paste' ? 'block' : 'none';
+}
+
+// --- File Handling ---
+const fileInput = document.getElementById('fileInput');
+const uploadArea = document.getElementById('uploadArea');
+const startBtn = document.getElementById('startBtn');
+
+fileInput.addEventListener('change', handleFile);
+uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+uploadArea.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadArea.classList.remove('dragover');
+  if (e.dataTransfer.files.length) {
+    fileInput.files = e.dataTransfer.files;
+    handleFile();
+  }
+});
+
+function loadData(text, sourceName) {
+  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+
+  const rows = parseCSV(text);
+  if (rows.length < 2) { alert('Keine Daten gefunden. Mindestens eine Kopfzeile und eine Datenzeile erwartet.'); return false; }
+
+  headers = rows[0];
+  parsedRows = rows.slice(1).filter(r => r.some(c => c.trim()));
+  startBtn.disabled = false;
+  return true;
+}
+
+function handleFile() {
+  const file = fileInput.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    if (loadData(e.target.result, file.name)) {
+      document.getElementById('fileName').textContent = `\u2713 ${file.name} \u2014 ${parsedRows.length} Eintr\u00e4ge, Spalten: ${headers.join(', ')}`;
+      uploadArea.classList.add('has-file');
+    }
+  };
+  reader.readAsText(file, 'utf-8');
+}
+
+function extractDOIsFromText(text) {
+  // DOIs im Text finden: doi:10.xxxx/..., https://doi.org/10.xxxx/..., oder bare 10.xxxx/...
+  const doiPattern = /(?:doi[\s:\.]?\s*|https?:\/\/doi\.org\/)(10\.\d{4,}\/[^\s,;)\]}"']+)/gi;
+  const matches = [];
+  let m;
+  while ((m = doiPattern.exec(text)) !== null) {
+    let doi = m[1].replace(/[.,;:)\]_*]+$/, '');
+    matches.push(doi);
+  }
+  // Auch bare DOIs ohne Prefix finden (z.B. "10.1152/physrev.1922.2.2.310")
+  const barePattern = /(?:^|\s)(10\.\d{4,}\/[^\s,;)\]}"']+)/gi;
+  while ((m = barePattern.exec(text)) !== null) {
+    let doi = m[1].replace(/[.,;:)\]_*]+$/, '');
+    matches.push(doi);
+  }
+  return [...new Set(matches)]; // Duplikate entfernen
+}
+
+function cleanMarkdown(text) {
+  // Strip markdown bold/italic markers: **bold**, __bold__, *italic*, _italic_
+  text = text.replace(/\*\*(.+?)\*\*/g, '$1');
+  text = text.replace(/__(.+?)__/g, '$1');
+  text = text.replace(/(?<=\s|^)\*([^\s*][^*]*[^\s*])\*(?=\s|$|[.,;:)])/g, '$1');
+  text = text.replace(/(?<=\s|^)_([^\s_][^_]*[^\s_])_(?=\s|$|[.,;:)])/g, '$1');
+  return text;
+}
+
+function splitReferences(text) {
+  // Clean markdown formatting first
+  text = cleanMarkdown(text);
+
+  let lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+
+  // If multiple lines, return them
+  if (lines.length > 1) return lines;
+
+  // Single line: try splitting on bullet patterns (* Title or - Title or \u2022 Title)
+  const bulletSplit = text.split(/(?<=\))\s*(?=[\*\-\u2022\u2013\u2014]\s+[A-Z])/).map(l => l.trim()).filter(l => l.length > 2);
+  if (bulletSplit.length > 1) return bulletSplit;
+
+  // Smart split: (Journal Name) followed by space + new title (capital + lowercase)
+  // This handles Chrome selectionText where list items are joined with single spaces
+  // Requires 4+ chars in parens to avoid splitting on short abbreviations like (CWI) or (2024)
+  const journalEndSplit = text.split(/(?<=\([^)]{4,}\))\s+(?=[A-Z])/).map(l => l.trim()).filter(l => l.length > 10);
+  if (journalEndSplit.length > 1) return journalEndSplit;
+
+  // Try double-spaces
+  const dblSplit = text.split(/\s{2,}/).map(l => l.trim()).filter(l => l.length > 2);
+  if (dblSplit.length > 1) return dblSplit;
+
+  // Try DOI boundaries
+  const doiSplit = text.split(/(?<=doi[\s:\.]\s*10\.\d{4,}\/[^\s]+\.)\s+/i).map(l => l.trim()).filter(l => l.length > 2);
+  if (doiSplit.length > 1) return doiSplit;
+
+  return lines;
+}
+
+function extractTitleFromReference(ref) {
+  // Clean markdown formatting
+  ref = cleanMarkdown(ref);
+
+  // Strip trailing journal name in parentheses: (Journal Name) or (Journal Name, Year)
+  ref = ref.replace(/\s*\([^)]{5,}\)\s*$/, '');
+
+  // Strip trailing period
+  ref = ref.replace(/\.\s*$/, '');
+
+  // Try to find author pattern: "Lastname AB," style
+  const authorPattern = /\.\s+[A-Z][a-z\u00e4\u00f6\u00fc\u00df-]+\s+[A-Z]{1,3}[\s,]/;
+  const match = ref.match(authorPattern);
+  if (match) return ref.substring(0, match.index + 1).trim();
+
+  // Fallback: sentence boundary
+  const sentenceEnd = ref.match(/\.\s+[A-Z]/);
+  if (sentenceEnd) return ref.substring(0, sentenceEnd.index + 1).trim();
+
+  return ref.trim();
+}
+
+function handlePaste() {
+  const text = document.getElementById('pasteInput').value.trim();
+  if (!text) { alert('Bitte erst Text einf\u00fcgen.'); return; }
+
+  const titleOnly = document.getElementById('titleOnlyMode').checked;
+
+  // Schritt 1: Immer zuerst auf eingebettete DOIs pr\u00fcfen (auch einzelne!)
+  const embeddedDOIs = extractDOIsFromText(text);
+  if (embeddedDOIs.length >= 1) {
+    headers = ['DOI'];
+    parsedRows = embeddedDOIs.map(d => [d]);
+    startBtn.disabled = false;
+    document.getElementById('pasteStatus').textContent = `\u2713 ${embeddedDOIs.length} DOI${embeddedDOIs.length > 1 ? 's' : ''} aus Referenztext extrahiert`;
+    return;
+  }
+
+  // Schritt 2: Title-Only-Modus
+  if (titleOnly) {
+    const refs = splitReferences(text);
+    const titles = refs
+      .map(r => cleanMarkdown(r))
+      .map(r => r.replace(/^[\d]+[\.\)\:]?\s*/, '').replace(/^[\-\*\u2022\u2013\u2014\u25CF\u25AA]+\s*/, '').trim())
+      .map(r => extractTitleFromReference(r))
+      .filter(t => t.length > 2);
+
+    if (titles.length === 0) { alert('Keine Titel erkannt.'); return; }
+
+    headers = ['Title'];
+    parsedRows = titles.map(t => [t]);
+    startBtn.disabled = false;
+    document.getElementById('pasteStatus').textContent = `\u2713 ${parsedRows.length} Titel extrahiert`;
+  } else {
+    if (loadData(text, 'Eingef\u00fcgter Text')) {
+      document.getElementById('pasteStatus').textContent = `\u2713 ${parsedRows.length} Eintr\u00e4ge erkannt, Spalten: ${headers.join(', ')}`;
+    }
+  }
+}
+
+function toggleTitleOnlyHint() {
+  const titleOnly = document.getElementById('titleOnlyMode').checked;
+  document.getElementById('pasteHint').textContent = titleOnly
+    ? 'Ein Titel pro Zeile. Aufz\u00e4hlungszeichen (1. / - / \u2022) werden automatisch entfernt.'
+    : 'Tabellarische Daten (Tab- oder Komma-getrennt) mit Kopfzeile. Kopieren aus Excel/Sheets funktioniert direkt.';
+}
+
+// --- Crossref API ---
+const API_BASE = 'https://api.crossref.org/works';
+
+async function fetchJSON(url, email) {
+  const headers = {};
+  if (email) headers['User-Agent'] = `CrossrefUI/1.0 (mailto:${email})`;
+  try {
+    const resp = await fetch(url, { headers });
+    if (!resp.ok) {
+      if (resp.status === 429) {
+        await sleep(3000);
+        return fetchJSON(url, email);
+      }
+      return null;
+    }
+    return await resp.json();
+  } catch {
+    return null;
+  }
+}
+
+async function lookupDOI(doi, email) {
+  doi = doi.trim().replace(/^https?:\/\/(dx\.)?doi\.org\//, '');
+  const url = `${API_BASE}/${encodeURIComponent(doi)}`;
+  const data = await fetchJSON(url, email);
+  if (data && data.status === 'ok') return data.message;
+  return null;
+}
+
+async function lookupTitle(title, author, email) {
+  const params = new URLSearchParams({ 'query.bibliographic': title, rows: '3' });
+  if (author) params.set('query.author', author);
+  const url = `${API_BASE}?${params}`;
+  const data = await fetchJSON(url, email);
+  if (!data || data.status !== 'ok') return null;
+
+  const items = data.message?.items || [];
+  if (!items.length) return null;
+
+  const titleClean = title.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
+  for (const item of items) {
+    for (const t of (item.title || [])) {
+      const tClean = t.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
+      if (tClean === titleClean || tClean.includes(titleClean) || titleClean.includes(tClean)) return item;
+      const wordsA = new Set(titleClean.split(/\s+/));
+      const wordsB = new Set(tClean.split(/\s+/));
+      const overlap = [...wordsA].filter(w => wordsB.has(w)).length / Math.max(wordsA.size, wordsB.size);
+      if (overlap > 0.7) return item;
+    }
+  }
+  if (items[0].score > 50) return items[0];
+  return null;
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// --- OpenAlex API ---
+const OA_BASE = 'https://api.openalex.org/works';
+
+async function oaFetch(url, email) {
+  const params = new URL(url);
+  if (email) params.searchParams.set('mailto', email);
+  try {
+    const resp = await fetch(params.toString());
+    if (!resp.ok) {
+      if (resp.status === 429) {
+        await sleep(3000);
+        return oaFetch(url, email);
+      }
+      return null;
+    }
+    return await resp.json();
+  } catch {
+    return null;
+  }
+}
+
+async function oaLookupByDOI(doi, email) {
+  doi = doi.trim().replace(/^https?:\/\/(dx\.)?doi\.org\//, '');
+  const url = `${OA_BASE}/https://doi.org/${doi}`;
+  return oaFetch(url, email);
+}
+
+async function oaLookupByTitle(title, email) {
+  const url = `${OA_BASE}?search=${encodeURIComponent(title)}&per-page=3`;
+  const data = await oaFetch(url, email);
+  if (!data || !data.results?.length) return null;
+
+  const titleClean = title.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
+  for (const item of data.results) {
+    const t = (item.display_name || item.title || '').toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
+    if (t === titleClean || t.includes(titleClean) || titleClean.includes(t)) return item;
+    const wordsA = new Set(titleClean.split(/\s+/));
+    const wordsB = new Set(t.split(/\s+/));
+    const overlap = [...wordsA].filter(w => wordsB.has(w)).length / Math.max(wordsA.size, wordsB.size);
+    if (overlap > 0.7) return item;
+  }
+  return null;
+}
+
+function extractOAMetrics(oaWork) {
+  if (!oaWork) return { fwci: '', percentile: '', top1: '', top10: '', pubYear: null, oaType: '' };
+
+  const fwci = oaWork.fwci != null ? parseFloat(oaWork.fwci).toFixed(2) : '';
+  const cnp = oaWork.citation_normalized_percentile;
+  const percentile = cnp?.value != null ? (cnp.value * 100).toFixed(1) : '';
+  const top1 = cnp?.is_in_top_1_percent ? 'ja' : cnp?.is_in_top_1_percent === false ? 'nein' : '';
+  const top10 = cnp?.is_in_top_10_percent ? 'ja' : cnp?.is_in_top_10_percent === false ? 'nein' : '';
+  const pubYear = oaWork.publication_year || null;
+
+  // OpenAlex type übersetzen
+  const typeMap = {
+    'article': 'Artikel', 'review': 'Review', 'editorial': 'Editorial',
+    'letter': 'Letter', 'erratum': 'Erratum', 'book-chapter': 'Buchkapitel',
+    'book': 'Buch', 'dataset': 'Datensatz', 'preprint': 'Preprint',
+    'dissertation': 'Dissertation', 'report': 'Bericht', 'peer-review': 'Peer-Review',
+    'reference-entry': 'Nachschlagewerk', 'standard': 'Standard',
+    'supplementary-materials': 'Zusatzmaterial', 'retraction': 'Retraction',
+    'paratext': 'Paratext', 'libguides': 'Libguide', 'other': 'Sonstige'
+  };
+  const rawType = oaWork.type || '';
+  const oaType = typeMap[rawType] || rawType;
+
+  return { fwci, percentile, top1, top10, pubYear, oaType };
+}
+
+// --- MeSH-Extraktion für Studientyp & Studiensubjekt ---
+function extractMeSHInfo(oaWork) {
+  const result = { studientyp: '', studiensubjekt: '' };
+  if (!oaWork || !oaWork.mesh || !oaWork.mesh.length) return result;
+
+  // Bekannte MeSH-Deskriptoren für Studiendesign / Publikationstyp
+  const studyTypeTerms = {
+    'Meta-Analysis': 'Meta-Analyse',
+    'Meta-Analysis as Topic': 'Meta-Analyse',
+    'Systematic Review': 'Systematic Review',
+    'Systematic Reviews as Topic': 'Systematic Review',
+    'Randomized Controlled Trial': 'RCT',
+    'Randomized Controlled Trials as Topic': 'RCT',
+    'Controlled Clinical Trial': 'Kontrollierte Studie',
+    'Clinical Trial': 'Klinische Studie',
+    'Clinical Trial, Phase I': 'Phase-I-Studie',
+    'Clinical Trial, Phase II': 'Phase-II-Studie',
+    'Clinical Trial, Phase III': 'Phase-III-Studie',
+    'Clinical Trial, Phase IV': 'Phase-IV-Studie',
+    'Observational Study': 'Beobachtungsstudie',
+    'Cohort Studies': 'Kohortenstudie',
+    'Prospective Studies': 'Prospektive Studie',
+    'Retrospective Studies': 'Retrospektive Studie',
+    'Case-Control Studies': 'Fall-Kontroll-Studie',
+    'Cross-Sectional Studies': 'Querschnittsstudie',
+    'Longitudinal Studies': 'L\u00e4ngsschnittstudie',
+    'Follow-Up Studies': 'Follow-Up-Studie',
+    'Multicenter Study': 'Multizenter-Studie',
+    'Case Reports': 'Fallbericht',
+    'Comparative Study': 'Vergleichsstudie',
+    'Review': 'Review',
+    'Practice Guideline': 'Leitlinie',
+    'Guideline': 'Leitlinie',
+    'Pilot Projects': 'Pilotstudie',
+    'Validation Study': 'Validierungsstudie',
+    'Equivalence Trial': '\u00c4quivalenzstudie',
+    'Pragmatic Clinical Trial': 'Pragmatische Studie',
+    'Twin Study': 'Zwillingsstudie',
+    'Double-Blind Method': 'Doppelblind',
+    'Single-Blind Method': 'Einfachblind',
+  };
+
+  // Bekannte MeSH-Deskriptoren für Studiensubjekt
+  const subjectTerms = {
+    'Humans': 'Human',
+    'Animals': 'Animal',
+    'Mice': 'Animal (Maus)',
+    'Rats': 'Animal (Ratte)',
+    'Dogs': 'Animal (Hund)',
+    'Cats': 'Animal (Katze)',
+    'Rabbits': 'Animal (Kaninchen)',
+    'Swine': 'Animal (Schwein)',
+    'Cattle': 'Animal (Rind)',
+    'Sheep': 'Animal (Schaf)',
+    'Guinea Pigs': 'Animal (Meerschwein)',
+    'Primates': 'Animal (Primaten)',
+    'Zebrafish': 'Animal (Zebrafisch)',
+    'Drosophila': 'Animal (Drosophila)',
+    'Mice, Inbred C57BL': 'Animal (C57BL-Maus)',
+    'Rats, Wistar': 'Animal (Wistar-Ratte)',
+    'Rats, Sprague-Dawley': 'Animal (SD-Ratte)',
+    'Disease Models, Animal': 'Tiermodell',
+    'In Vitro Techniques': 'In Vitro',
+    'Cells, Cultured': 'In Vitro (Zellkultur)',
+    'Cell Line': 'In Vitro (Zelllinie)',
+    'Cell Line, Tumor': 'In Vitro (Tumorzelllinie)',
+    'Cell Culture Techniques': 'In Vitro (Zellkultur)',
+    'Tumor Cells, Cultured': 'In Vitro (Tumorzellen)',
+    'HeLa Cells': 'In Vitro (HeLa)',
+  };
+
+  const types = [];
+  const subjects = [];
+  const seenSubjectGroups = new Set(); // Duplikate vermeiden (z.B. nur 1x "Animal")
+
+  for (const mesh of oaWork.mesh) {
+    const name = mesh.descriptor_name || '';
+
+    if (studyTypeTerms[name] && !types.includes(studyTypeTerms[name])) {
+      types.push(studyTypeTerms[name]);
+    }
+
+    if (subjectTerms[name]) {
+      const label = subjectTerms[name];
+      const group = label.split(' (')[0]; // "Animal", "Human", "In Vitro", "Tiermodell"
+      if (!seenSubjectGroups.has(group)) {
+        subjects.push(label);
+        seenSubjectGroups.add(group);
+      }
+    }
+  }
+
+  result.studientyp = types.join(', ');
+  result.studiensubjekt = subjects.join(', ');
+  return result;
+}
+
+// --- Log ---
+function addLog(text, type = 'info') {
+  const panel = document.getElementById('logPanel');
+  const entry = document.createElement('div');
+  entry.className = `log-entry log-${type}`;
+  entry.textContent = text;
+  panel.appendChild(entry);
+  panel.scrollTop = panel.scrollHeight;
+}
+
+function toggleLog() {
+  document.getElementById('logPanel').classList.toggle('visible');
+}
+
+// --- Main Lookup ---
+const DEMO_LIMIT = 3; // Demo: max. 3 Paper
+
+async function startLookup() {
+  if (isRunning) return;
+  isRunning = true;
+
+  const email = document.getElementById('emailInput').value.trim();
+  const colMap = detectColumns(headers);
+
+  if (colMap.doi === -1 && colMap.title === -1) {
+    alert('Keine DOI- oder Titel-Spalte erkannt.\nErwartete Spaltenname: DOI, Title, Author');
+    isRunning = false;
+    return;
+  }
+
+  // Demo-Limit
+  if (parsedRows.length > DEMO_LIMIT) {
+    parsedRows = parsedRows.slice(0, DEMO_LIMIT);
+    addLog(`\u26A0 Demo-Version: nur die ersten ${DEMO_LIMIT} Paper werden abgefragt. F\u00fcr unbegrenzte Lookups die Vollversion nutzen.`, 'error');
+  }
+
+  startBtn.disabled = true;
+  startBtn.textContent = '\u23F3 Läuft\u2026';
+
+  const progressSection = document.getElementById('progressSection');
+  progressSection.classList.add('visible');
+  document.getElementById('logPanel').innerHTML = '';
+
+  const detected = [];
+  if (colMap.doi >= 0) detected.push(`DOI: "${headers[colMap.doi]}"`);
+  if (colMap.title >= 0) detected.push(`Titel: "${headers[colMap.title]}"`);
+  if (colMap.author >= 0) detected.push(`Autor: "${headers[colMap.author]}"`);
+  addLog(`Spalten erkannt: ${detected.join(', ')}`, 'info');
+
+  results = [];
+  let found = 0, notFound = 0;
+
+  for (let i = 0; i < parsedRows.length; i++) {
+    const row = parsedRows[i];
+    const doi = colMap.doi >= 0 ? (row[colMap.doi] || '').trim() : '';
+    const title = colMap.title >= 0 ? (row[colMap.title] || '').trim() : '';
+    const author = colMap.author >= 0 ? (row[colMap.author] || '').trim() : '';
+    const label = doi || title || `Zeile ${i + 1}`;
+
+    const pct = Math.round(((i + 1) / parsedRows.length) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressText').textContent = `${i + 1} / ${parsedRows.length}`;
+    document.getElementById('progressPercent').textContent = pct + '%';
+    document.getElementById('currentPaper').textContent = `\uD83D\uDD0D ${label}`;
+
+    addLog(`[${i + 1}/${parsedRows.length}] ${label.substring(0, 80)}`, 'info');
+
+    // DOI validieren
+    let useDoi = '';
+    if (doi) {
+      const check = validateDOI(doi);
+      if (check.valid) {
+        useDoi = check.cleaned;
+      } else if (check.type !== 'empty') {
+        addLog(`  \u26A0 ${check.hint} \u2192 Suche stattdessen \u00fcber Titel`, 'error');
+      }
+    }
+
+    let metadata = null;
+    if (useDoi) metadata = await lookupDOI(useDoi, email);
+    if (!metadata && title) metadata = await lookupTitle(title, author, email);
+
+    const result = [...row];
+    const hadBadId = doi && !useDoi;
+    const idWarn = hadBadId ? (validateDOI(doi).hint || '') : '';
+
+    if (metadata) {
+      const citations = metadata['is-referenced-by-count'] || 0;
+      const crDoi = metadata.DOI || '';
+      const crTitle = (metadata.title || [''])[0];
+      const status = hadBadId ? 'DOI pr\u00fcfen \u2013 via Titel gefunden' : 'gefunden';
+      result.push(String(citations), crDoi, crTitle, status);
+      found++;
+      addLog(`  \u2713 ${citations} Zitationen (Crossref)`, 'success');
+
+      // OpenAlex-Lookup für FWCI
+      let oaWork = null;
+      const oaDoi = crDoi || useDoi;
+      if (oaDoi) oaWork = await oaLookupByDOI(oaDoi, email);
+      if (!oaWork && title) oaWork = await oaLookupByTitle(title, email);
+      const oa = extractOAMetrics(oaWork);
+
+      // Citations Per Year (CPY) berechnen
+      let cpy = '';
+      const pubYear = oa.pubYear
+        || (metadata.issued?.['date-parts']?.[0]?.[0])
+        || (metadata.published?.['date-parts']?.[0]?.[0])
+        || (metadata.created?.['date-parts']?.[0]?.[0]);
+      if (pubYear && citations > 0) {
+        const years = Math.max(1, new Date().getFullYear() - pubYear);
+        cpy = (citations / years).toFixed(1);
+      }
+
+      // MeSH-Info extrahieren
+      const meshInfo = extractMeSHInfo(oaWork);
+
+      result.push(oa.fwci, oa.percentile, oa.top1, oa.top10, cpy, oa.oaType, meshInfo.studientyp, meshInfo.studiensubjekt, idWarn);
+      if (oa.fwci) {
+        addLog(`  \u2713 FWCI: ${oa.fwci} | Perzentil: ${oa.percentile}%` + (cpy ? ` | CPY: ${cpy}` : '') + ` (OpenAlex)`, 'success');
+      } else {
+        addLog(`  \u2014 FWCI nicht verf\u00fcgbar` + (cpy ? ` | CPY: ${cpy}` : ''), 'info');
+      }
+      if (oa.oaType) addLog(`  \u2139 Typ: ${oa.oaType}` + (meshInfo.studientyp ? ` | Design: ${meshInfo.studientyp}` : '') + (meshInfo.studiensubjekt ? ` | Subjekt: ${meshInfo.studiensubjekt}` : ''), 'info');
+    } else {
+      const status = hadBadId ? 'DOI pr\u00fcfen \u2013 nicht gefunden' : 'nicht gefunden';
+      result.push('', '', '', status, '', '', '', '', '', '', '', '', idWarn);
+      notFound++;
+      addLog(`  \u2717 Nicht gefunden`, 'error');
+    }
+    results.push(result);
+
+    if (i < parsedRows.length - 1) await sleep(350);
+  }
+
+  document.getElementById('currentPaper').textContent = '\u2705 Fertig!';
+  startBtn.textContent = '\u2713 Abgeschlossen';
+
+  showResults(found, notFound);
+  isRunning = false;
+}
+
+// --- Sorting ---
+let sortCol = -1;
+let sortDir = 'none'; // 'none' | 'asc' | 'desc'
+
+function sortByColumn(colIdx) {
+  if (sortCol === colIdx) {
+    sortDir = sortDir === 'asc' ? 'desc' : sortDir === 'desc' ? 'none' : 'asc';
+  } else {
+    sortCol = colIdx;
+    sortDir = 'asc';
+  }
+
+  // Daten vorbereiten (ggf. gefiltert)
+  let data = getFilteredResults();
+
+  if (sortDir === 'none') {
+    sortCol = -1;
+    renderTable(data);
+  } else {
+    const sorted = [...data].sort((a, b) => {
+      let va = a[colIdx] || '';
+      let vb = b[colIdx] || '';
+
+      // Numerisch sortieren wenn möglich
+      const na = parseFloat(va);
+      const nb = parseFloat(vb);
+      if (!isNaN(na) && !isNaN(nb)) {
+        return sortDir === 'asc' ? na - nb : nb - na;
+      }
+
+      // Leere Werte immer ans Ende
+      if (!va && vb) return 1;
+      if (va && !vb) return -1;
+      if (!va && !vb) return 0;
+
+      // Text-Sortierung
+      const cmp = va.localeCompare(vb, 'de', { sensitivity: 'base' });
+      return sortDir === 'asc' ? cmp : -cmp;
+    });
+    renderTable(sorted);
+  }
+
+  // Header-Klassen aktualisieren (per data-col-idx statt Position)
+  document.querySelectorAll('#tableHead th').forEach((th) => {
+    const colIdx = parseInt(th.dataset.colIdx);
+    th.classList.remove('sort-asc', 'sort-desc');
+    const arrow = th.querySelector('.sort-arrow');
+    if (colIdx === sortCol && sortDir !== 'none') {
+      th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+      if (arrow) arrow.textContent = sortDir === 'asc' ? '\u25B2' : '\u25BC';
+    } else {
+      if (arrow) arrow.textContent = '\u25B4\u25BE';
+    }
+  });
+}
+
+// --- Filter by Status ---
+let activeFilter = 'all'; // 'all' | 'found' | 'notfound'
+
+function getFilteredResults() {
+  if (activeFilter === 'all') return results;
+  const allHeaders = getAllHeaders();
+  const statusIdx = allHeaders.indexOf('lookup_status');
+  if (activeFilter === 'found') {
+    return results.filter(r => {
+      const s = (r[statusIdx] || '').toLowerCase();
+      return s.includes('gefunden') && !s.includes('nicht');
+    });
+  }
+  return results.filter(r => {
+    const s = (r[statusIdx] || '').toLowerCase();
+    return s.includes('nicht') || !s.includes('gefunden');
+  });
+}
+
+function filterByStatus(filter) {
+  // Toggle: nochmal klicken = zur\u00fcck zu "alle"
+  if (activeFilter === filter) filter = 'all';
+  activeFilter = filter;
+
+  // Aktive Stat-Box markieren
+  document.getElementById('filterTotal').classList.toggle('active', filter === 'all');
+  document.getElementById('filterFound').classList.toggle('active', filter === 'found');
+  document.getElementById('filterNotFound').classList.toggle('active', filter === 'notfound');
+
+  renderTable(getFilteredResults());
+}
+
+function toggleStickyCol() {
+  const wrapper = document.getElementById('tableWrapper');
+  const checked = document.getElementById('stickyToggle').checked;
+  wrapper.classList.toggle('sticky-enabled', checked);
+}
+
+// --- Results Display ---
+function getAllHeaders() {
+  const extraHeaders = ['citation_count', 'crossref_doi', 'crossref_title', 'lookup_status', 'fwci', 'percentile', 'top_1%', 'top_10%', 'cit_per_year', 'oa_type', 'studientyp', 'studiensubjekt', 'id_warnung'];
+  return [...headers, ...extraHeaders];
+}
+
+// Display-Reihenfolge für HTML-Tabelle (abweichend von CSV/Daten-Reihenfolge)
+function getDisplayOrder() {
+  const allHeaders = getAllHeaders();
+  const displayExtraOrder = ['crossref_title', 'citation_count', 'crossref_doi', 'lookup_status', 'fwci', 'percentile', 'top_1%', 'top_10%', 'cit_per_year', 'oa_type', 'studientyp', 'studiensubjekt', 'id_warnung'];
+  const order = [];
+  // Neue Metriken zuerst, beginnend mit crossref_title
+  for (const h of displayExtraOrder) {
+    const idx = allHeaders.indexOf(h);
+    if (idx >= 0) order.push(idx);
+  }
+  // Dann die Original-CSV-Spalten
+  for (let i = 0; i < headers.length; i++) order.push(i);
+  return order;
+}
+
+function renderTable(data) {
+  const allHeaders = getAllHeaders();
+  const displayOrder = getDisplayOrder();
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = '';
+  for (const row of data) {
+    const tr = document.createElement('tr');
+    displayOrder.forEach((dataIdx) => {
+      const h = allHeaders[dataIdx];
+      const td = document.createElement('td');
+      const val = row[dataIdx] || '';
+      if (h === 'crossref_title') {
+        td.classList.add('sticky-col');
+        const doiIdx = allHeaders.indexOf('crossref_doi');
+        const doi = doiIdx >= 0 ? (row[doiIdx] || '') : '';
+        if (val && doi) {
+          td.innerHTML = `<a href="https://doi.org/${esc(doi)}" target="_blank" style="color:var(--primary);text-decoration:none;" title="${esc(val)}">${esc(val)}</a>`;
+        } else {
+          td.textContent = val;
+          td.title = val;
+        }
+      } else if (h === 'citation_count' && val) {
+        const n = parseInt(val);
+        const cls = n >= 100 ? 'citation-high' : n >= 10 ? 'citation-med' : 'citation-low';
+        td.innerHTML = `<span class="citation-badge ${cls}">${n.toLocaleString('de-DE')}</span>`;
+      } else if (h === 'fwci' && val) {
+        const f = parseFloat(val);
+        const cls = f >= 3 ? 'citation-high' : f >= 1 ? 'citation-med' : 'citation-low';
+        td.innerHTML = `<span class="citation-badge ${cls}">${f.toFixed(2)}</span>`;
+      } else if (h === 'percentile' && val) {
+        const p = parseFloat(val);
+        const cls = p >= 90 ? 'citation-high' : p >= 50 ? 'citation-med' : 'citation-low';
+        td.innerHTML = `<span class="citation-badge ${cls}">${p.toFixed(1)}%</span>`;
+      } else if (h === 'top_1%' || h === 'top_10%') {
+        if (val === 'ja') { td.className = 'status-found'; td.textContent = 'ja'; }
+        else if (val === 'nein') { td.className = 'status-not-found'; td.textContent = 'nein'; }
+        else { td.textContent = val; }
+      } else if (h === 'cit_per_year' && val) {
+        const c = parseFloat(val);
+        const cls = c >= 20 ? 'citation-high' : c >= 5 ? 'citation-med' : 'citation-low';
+        td.innerHTML = `<span class="citation-badge ${cls}">${c.toFixed(1)}</span>`;
+      } else if (h === 'oa_type' && val) {
+        td.innerHTML = `<span class="type-badge">${esc(val)}</span>`;
+        td.title = val;
+      } else if (h === 'studientyp' && val) {
+        td.innerHTML = val.split(', ').map(t => `<span class="mesh-tag mesh-tag-type">${esc(t)}</span>`).join(' ');
+        td.style.whiteSpace = 'normal';
+        td.title = val;
+      } else if (h === 'studiensubjekt' && val) {
+        td.innerHTML = val.split(', ').map(s => {
+          let cls = 'mesh-tag-type';
+          if (s.startsWith('Human')) cls = 'mesh-tag-human';
+          else if (s.startsWith('Animal') || s === 'Tiermodell') cls = 'mesh-tag-animal';
+          else if (s.startsWith('In Vitro')) cls = 'mesh-tag-invitro';
+          return `<span class="mesh-tag ${cls}">${esc(s)}</span>`;
+        }).join(' ');
+        td.style.whiteSpace = 'normal';
+        td.title = val;
+      } else if (h === 'id_warnung' && val) {
+        td.style.color = 'var(--warning, #f59e0b)';
+        td.style.fontWeight = '600';
+        td.textContent = val;
+        td.title = val;
+      } else if (h === 'lookup_status') {
+        if (val.startsWith('DOI')) {
+          td.style.color = 'var(--warning, #f59e0b)';
+          td.style.fontWeight = '600';
+        } else {
+          td.className = val === 'gefunden' ? 'status-found' : 'status-not-found';
+        }
+        td.textContent = val;
+        td.title = val;
+      } else if (h === 'crossref_doi' && val) {
+        td.innerHTML = `<a href="https://doi.org/${esc(val)}" target="_blank" style="color:var(--primary)">${esc(val)}</a>`;
+      } else {
+        td.textContent = val;
+        td.title = val;
+      }
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  }
+}
+
+function showResults(found, notFound) {
+  document.getElementById('statTotal').textContent = results.length;
+  document.getElementById('statFound').textContent = found;
+  document.getElementById('statNotFound').textContent = notFound;
+
+  const allHeaders = getAllHeaders();
+
+  // Tooltip-Erkl\u00e4rungen f\u00fcr Metriken (mit Qualit\u00e4tseinordnung)
+  const tooltips = {
+    'citation_count': 'Gesamtzahl der Zitationen (Crossref). Mehr Zitationen deuten auf h\u00f6heren Einfluss hin \u2013 aber stark abh\u00e4ngig von Alter und Fachgebiet.',
+    'crossref_doi': 'DOI des gefundenen Eintrags in Crossref.',
+    'crossref_title': 'Titel des gefundenen Eintrags in Crossref.',
+    'lookup_status': 'Suchergebnis: gr\u00fcn = gefunden, rot = nicht gefunden, orange = DOI-Format ung\u00fcltig.',
+    'fwci': 'Field-Weighted Citation Impact. Normalisiert nach Fachgebiet, Dokumenttyp & Alter. 1.0 = Durchschnitt. >1 = \u00fcberdurchschnittlich zitiert, <1 = unterdurchschnittlich.',
+    'percentile': 'Zitations-Perzentil im Fachgebiet. 90 = besser als 90% aller Paper. >75 = stark, >50 = solide.',
+    'top_1%': 'Geh\u00f6rt zu den Top 1% der meistzitierten Paper im Fachgebiet? \u201eja\u201c = herausragend einflussreich.',
+    'top_10%': 'Geh\u00f6rt zu den Top 10% der meistzitierten Paper im Fachgebiet? \u201eja\u201c = sehr einflussreich.',
+    'cit_per_year': 'Zitationen pro Jahr seit Ver\u00f6ffentlichung. Erm\u00f6glicht fairen Vergleich zwischen alten und neuen Papern. >10 = stark zitiert.',
+    'oa_type': 'Dokumenttyp laut OpenAlex. \u201eReview\u201c und \u201eMeta-Analyse\u201c haben h\u00f6chste Evidenzstufe, \u201eEditorial\u201c und \u201eLetter\u201c die niedrigste.',
+    'studientyp': 'Studiendesign aus MeSH-Tags (nur PubMed). Evidenzhierarchie: Meta-Analyse > RCT > Kohortenstudie > Fallbericht.',
+    'studiensubjekt': 'Studiensubjekt aus MeSH-Tags (nur PubMed). Human-Studien haben h\u00f6here klinische Relevanz als Animal oder In Vitro.',
+    'id_warnung': 'Warnung: die eingegebene ID ist keine g\u00fcltige DOI (z.B. ISBN, ISSN, PMID). Suche erfolgte \u00fcber Titel.',
+  };
+
+  // Sortierbare Header mit Info-Icons und Tooltips
+  const tooltip = document.getElementById('colTooltip');
+  const thead = document.getElementById('tableHead');
+  const tr = document.createElement('tr');
+
+  function showTooltip(anchorEl, text) {
+    tooltip.textContent = text;
+    tooltip.classList.add('visible');
+    const rect = anchorEl.getBoundingClientRect();
+    const tipW = tooltip.offsetWidth;
+    const tipH = tooltip.offsetHeight;
+    let left = rect.left + rect.width / 2 - tipW / 2;
+    if (left < 4) left = 4;
+    if (left + tipW > window.innerWidth - 4) left = window.innerWidth - tipW - 4;
+    let top = rect.top - tipH - 8;
+    if (top < 4) top = rect.bottom + 8; // Unter dem Element wenn kein Platz oben
+    tooltip.style.left = left + 'px';
+    tooltip.style.top = top + 'px';
+  }
+
+  function hideTooltip() {
+    tooltip.classList.remove('visible');
+  }
+
+  const displayOrder = getDisplayOrder();
+  displayOrder.forEach((dataIdx) => {
+    const h = allHeaders[dataIdx];
+    const th = document.createElement('th');
+    th.dataset.colIdx = dataIdx;
+    if (h === 'crossref_title') th.classList.add('sticky-col', 'sticky-col-header');
+
+    if (tooltips[h]) {
+      th.innerHTML = `${esc(h)}<span class="info-icon" aria-label="Info">i</span><span class="sort-arrow">\u25B4\u25BE</span>`;
+      const icon = th.querySelector('.info-icon');
+      icon.addEventListener('mouseenter', (e) => { e.stopPropagation(); showTooltip(icon, tooltips[h]); });
+      icon.addEventListener('mouseleave', hideTooltip);
+      icon.addEventListener('click', (e) => e.stopPropagation()); // Sortierung nicht ausl\u00f6sen
+    } else {
+      th.innerHTML = `${esc(h)}<span class="sort-arrow">\u25B4\u25BE</span>`;
+    }
+
+    th.addEventListener('click', () => sortByColumn(dataIdx));
+    tr.appendChild(th);
+  });
+  thead.innerHTML = '';
+  thead.appendChild(tr);
+
+  // Reset sort & filter state
+  sortCol = -1;
+  sortDir = 'none';
+  activeFilter = 'all';
+  document.getElementById('filterTotal').classList.remove('active');
+  document.getElementById('filterFound').classList.remove('active');
+  document.getElementById('filterNotFound').classList.remove('active');
+
+  renderTable(results);
+
+  document.getElementById('resultsSection').classList.add('visible');
+  document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+}
+
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+// --- Export ---
+function downloadCSV() {
+  alert('CSV-Export ist nur in der Vollversion verf\u00fcgbar.\n\nJetzt holen: www.outoftheb-ox.de');
+  return;
+  const allHeaders = getAllHeaders();
+
+  const csvContent = [allHeaders, ...results]
+    .map(row => row.map(cell => {
+      const s = String(cell || '');
+      return s.includes(',') || s.includes('"') || s.includes('\n')
+        ? '"' + s.replace(/"/g, '""') + '"'
+        : s;
+    }).join(','))
+    .join('\n');
+
+  const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+
+  const origName = fileInput.files[0]?.name?.replace(/\.[^.]+$/, '') || 'papers';
+  link.download = `${origName}_citations.csv`;
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+
+function copyTable() {
+  const allHeaders = getAllHeaders();
+
+  const text = [allHeaders.join('\t'), ...results.map(r => r.join('\t'))].join('\n');
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('[onclick="copyTable()"]');
+    const orig = btn.textContent;
+    btn.textContent = '\u2713 Kopiert!';
+    setTimeout(() => btn.textContent = orig, 2000);
+  });
+}
+</script>
+<div class="col-tooltip" id="colTooltip"></div>
+</body>
+</html>
